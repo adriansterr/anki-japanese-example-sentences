@@ -1,0 +1,19 @@
+{
+    "auto_furigana": false,
+    "fields": [
+        {
+            "auto_generate": false,
+            "note_type": "Japanese ShinKanzenMasterVocabN2",
+            "sentence": "More Ex",
+            "word": "Expression"
+        },
+        {
+            "auto_generate": false,
+            "note_type": "example_sentences",
+            "sentence": "More Ex",
+            "word": "Front"
+        }
+    ],
+    "furigana_skip_numbers": true,
+    "furigana_skip_words": ""
+}

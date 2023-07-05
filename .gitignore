@@ -1,0 +1,9 @@
+vscode/*
+!vscode/settings.json
+
+history/
+*.vsix
+
+venv/
+mypy_cache/
+__pycache__/
