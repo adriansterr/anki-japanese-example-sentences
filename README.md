@@ -1,4 +1,4 @@
-# anki-example-sentences-jp
+# anki-japanese-example-sentences
 ### Anki addon to automatically generate example sentences in Japanese.
 
 Based on this extension: [Example Sentences - Japanese](https://ankiweb.net/shared/info/1290983049), I switched to another website that in my opinion delivers better example sentences, because they are shorter and more to the point. The new website is [massif.la ](https://massif.la/ja).
