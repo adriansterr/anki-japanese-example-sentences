@@ -28,10 +28,12 @@ def get_soup_instance(word: str):
     return soup
 
 def get_first_sentence_from_page(soup: BeautifulSoup) -> str:
-    sentence = soup.select_one('li', class_='text-japanese').find('div').text.strip()
+    text = soup.select_one('li', class_='text-japanese')
 
-    if sentence is None:
+    if text is None:
         return ''
+
+    sentence = text.find('div').text.strip()
 
     return sentence
 
