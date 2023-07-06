@@ -8,7 +8,7 @@ from aqt.qt import *
 from .utils import *
 from .example_sentences import add_first_example_sentence
 
-_ACTION_NAME = 'Bulk-add Example Sentences'
+_ACTION_NAME = 'Bulk-add Example Sentences (1 each)'
 
 def show_confirmation_dialog(note_count: int, browser: Browser):
     reply = QMessageBox.question(browser, _ACTION_NAME, f'Are you sure you want to generate example sentences for {note_count} notes?')
