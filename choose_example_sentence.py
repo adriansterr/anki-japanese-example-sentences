@@ -68,10 +68,7 @@ class ChooseExampleSentenceDialog(QDialog):
                 background-color: {};
                 color: {};
             }}
-        '''.format(\
-            '#529bc7' if theme_manager.night_mode else 'rgba(150, 150, 150, 50)',\
-            theme_manager.color(colors.HIGHLIGHT_FG) if theme_manager.night_mode else 'black'\
-        )
+        '''
 
         self.list_view.setStyleSheet(style)
         self.list_view.setModel(self.list_model)
