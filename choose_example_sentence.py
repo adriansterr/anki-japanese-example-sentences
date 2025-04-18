@@ -20,7 +20,7 @@ class ChooseExampleSentenceDialog(QDialog):
 
         # Window icon
         self.window_icon = QIcon()
-        self.window_icon.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Normal, QIcon.Off)
+        self.window_icon.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Mode.Normal, QIcon.State.Off)
 
         self.setWindowTitle(_ACTION_NAME)
         self.setWindowIcon(self.window_icon)
@@ -37,7 +37,7 @@ class ChooseExampleSentenceDialog(QDialog):
         self.heading = QLabel()
         self.heading.setText(_ACTION_NAME)
         self.heading.setFont(heading_font)
-        self.heading.setAlignment(Qt.Qt.AlignmentFlag.AlignCenter)
+        self.heading.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.layout.addWidget(self.heading)
 
