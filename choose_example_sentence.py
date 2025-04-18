@@ -1,10 +1,9 @@
-from aqt import colors
+from aqt import colors, qconnect
 from aqt.browser.browser import Browser
 from aqt.operations import QueryOp
 from aqt.operations.note import update_note
 from aqt.theme import theme_manager
-from aqt.qt import *
-from PyQt5 import QtCore
+from aqt.qt import Qt, QDialog, QWidget, QIcon, QPixmap, QVBoxLayout, QFont, QLabel, QListView, QDialogButtonBox, QStandardItemModel, QStandardItem, QMessageBox, QAction
 
 from .example_sentences import *
 from .utils import *
@@ -21,7 +20,7 @@ class ChooseExampleSentenceDialog(QDialog):
 
         # Window icon
         self.window_icon = QIcon()
-        self.window_icon.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Normal, QIcon.Off)
+        self.window_icon.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Mode.Normal, QIcon.State.Off)
 
         self.setWindowTitle(_ACTION_NAME)
         self.setWindowIcon(self.window_icon)
@@ -38,7 +37,7 @@ class ChooseExampleSentenceDialog(QDialog):
         self.heading = QLabel()
         self.heading.setText(_ACTION_NAME)
         self.heading.setFont(heading_font)
-        self.heading.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.heading.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.layout.addWidget(self.heading)
 
