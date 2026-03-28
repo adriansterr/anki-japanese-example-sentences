@@ -14,7 +14,7 @@ def show_confirmation_dialog(note_count: int, browser: Browser):
     reply = QMessageBox.question(browser, _ACTION_NAME, f'Are you sure you want to generate example sentences for {note_count} notes?')
     return reply == QMessageBox.StandardButton.Yes
 
-def show_success_dialog(note_count: int):
+def show_success_dialog(updated_count: int, total_count: int):
     dialog = QDialog()
 
     # Layout
@@ -25,7 +25,10 @@ def show_success_dialog(note_count: int):
 
     # Message
     message = QLabel()
-    message.setText(f'Succesfully added example sentences for {note_count} notes')
+    if updated_count == total_count:
+        message.setText(f'Successfully added example sentences for {updated_count} notes')
+    else:
+        message.setText(f'Successfully added example sentences for {updated_count} out of {total_count} notes.\n\nSome notes were skipped due to network errors or missing fields.')
 
     layout.addWidget(message)
 
@@ -37,7 +40,7 @@ def show_success_dialog(note_count: int):
 
     # Window icon
     icon = QIcon()
-    icon.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Normal, QIcon.Off)
+    icon.addPixmap(QPixmap(":/icons/anki.png"), QIcon.Mode.Normal, QIcon.State.Off)
 
     dialog.setWindowTitle(_ACTION_NAME)
     dialog.setWindowIcon(icon)
@@ -49,7 +52,10 @@ def generate_sentences(selected_nids: Sequence, browser: Browser):
     if not show_confirmation_dialog(note_count, browser):
         return
 
+    updated_count = 0
+
     def do(col: Collection):
+        nonlocal updated_count
         changed_notes = []
         note_index = 0
             
@@ -78,10 +84,14 @@ def generate_sentences(selected_nids: Sequence, browser: Browser):
 
             note_index += 1
 
+        updated_count = len(changed_notes)
         return col.update_notes(changed_notes)
 
+    def on_success(_):
+        show_success_dialog(updated_count, note_count)
+
     operation = CollectionOp(parent=browser, op=do)
-    operation.success(lambda _: show_success_dialog(note_count))
+    operation.success(on_success)
     operation.run_in_background()
 
 def add_menu_items(browser: Browser):
@@ -97,3 +107,14 @@ def init():
     else:
         from aqt import gui_hooks
         gui_hooks.browser_menus_did_init.append(add_menu_items)
+
+def get_soup_instance(word: str):
+    try:
+        word_escaped = urllib.parse.quote_plus(word.encode('utf-8'))
+        page = requests.get(MASSIF + word_escaped, timeout=10)
+        page.raise_for_status()  # Raise exception for bad status codes
+        soup = BeautifulSoup(page.content, 'html.parser')
+        return soup
+    except requests.exceptions.RequestException as e:
+        # Log the error or re-raise so the user knows
+        raise Exception(f"Failed to fetch sentences: {str(e)}")

@@ -21,6 +21,7 @@
 
 import os
 import re
+import shutil
 import subprocess
 import sys
 from typing import List, Optional, Container
@@ -52,8 +53,7 @@ def normalize_for_platform(popen: List[str]) -> List[str]:
 
 
 def find_executable(name: str) -> str:
-    from distutils.spawn import find_executable as find
-    if cmd := find(name):
+    if cmd := shutil.which(name):
         return cmd
     else:
         cmd = os.path.join(SUPPORT_DIR, name)

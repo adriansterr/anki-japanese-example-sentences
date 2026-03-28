@@ -21,11 +21,23 @@ YOUREI_URL = 'https://yourei.jp'
 MASSIF = 'https://massif.la/ja/search?q='
 
 def get_soup_instance(word: str):
-    word_escaped = urllib.parse.quote_plus(word.encode('utf-8'))
-    page = requests.get(MASSIF + word_escaped)
-    soup = BeautifulSoup(page.content, 'html.parser')
-
-    return soup
+    try:
+        word_escaped = urllib.parse.quote_plus(word.encode('utf-8'))
+        page = requests.get(MASSIF + word_escaped, timeout=10)
+        page.raise_for_status()
+        soup = BeautifulSoup(page.content, 'html.parser')
+        return soup
+    except requests.exceptions.Timeout:
+        raise Exception(f"Network timeout while fetching sentences for '{word}'. Please check your internet connection and try again.")
+    except requests.exceptions.ConnectionError:
+        raise Exception(f"Failed to connect to {MASSIF}. Please check your internet connection.")
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 429:
+            raise Exception(f"Too many requests to the website. Please wait a few minutes before trying again.")
+        else:
+            raise Exception(f"Server error while fetching sentences: {e.response.status_code}")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Failed to fetch sentences for '{word}': {str(e)}")
 
 def get_first_sentence_from_page(soup: BeautifulSoup) -> str:
     text = soup.select_one('li', class_='text-japanese')
@@ -75,7 +87,11 @@ def add_first_example_sentence(note: Note, word_field: str, sentence_field: str)
         return False
 
     word = mw.col.media.strip(note[word_field])
-    soup = get_soup_instance(word)
+    try:
+        soup = get_soup_instance(word)
+    except Exception:
+        # Network error occurred, return False to skip this note
+        return False
 
     sentence = get_first_sentence_from_page(soup)
 

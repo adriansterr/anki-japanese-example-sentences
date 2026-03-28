@@ -91,17 +91,31 @@ class ChooseExampleSentenceDialog(QDialog):
 
     def load_list(self) -> QStandardItemModel:
         model = QStandardItemModel(self.list_view)
+        self.sentences = []
+        self.load_error = None
 
         def load_sentences(_):
-            soup = get_soup_instance(self.word)
-            self.sentences = get_all_sentences_from_page(soup)
+            try:
+                soup = get_soup_instance(self.word)
+                self.sentences = get_all_sentences_from_page(soup)
+            except Exception as e:
+                self.load_error = str(e)
+                self.sentences = []
 
         def load_model(_):
+            if self.load_error:
+                QMessageBox.critical(self, _ACTION_NAME, f'Error loading sentences:\n{self.load_error}')
+            
             for sentence in self.sentences:
                 sentence_item = QStandardItem(sentence)
                 sentence_item.setEditable(False)
 
                 model.appendRow(sentence_item)
+
+        def on_error(error):
+            QMessageBox.critical(self, _ACTION_NAME, f'Error loading sentences:\n{str(error)}')
+            self.sentences = []
+            load_model(None)
 
         QueryOp(parent=self, op=load_sentences, success=load_model).with_progress(_ACTION_NAME).run_in_background()
         return model
